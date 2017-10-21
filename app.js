@@ -106,7 +106,8 @@ io.sockets.on('connection', (socket) => {
                     Message.findById({ _id: message._id })
                     .populate('user')
                     .then(message => {
-                      io.emit('output', [message])
+                      io.emit('output', [message]);
+                      socket.broadcast.emit('notification', message);
                     });
                   });
           }

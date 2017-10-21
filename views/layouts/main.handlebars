@@ -32,16 +32,7 @@
 
 
   Notification.requestPermission(function(result) {
-    if (result === 'granted') {
-      navigator.serviceWorker.ready.then(function(registration) {
-        registration.showNotification('Vibration Sample', {
-          body: 'Buzz! Buzz!',
-          icon: 'https://pbs.twimg.com/profile_images/839721704163155970/LI_TRk1z_400x400.jpg',
-          vibrate: [200, 100, 200, 100, 200, 100, 200],
-          tag: 'vibration-sample'
-        });
-      });
-    }
+    console.log(result);
   });
 
       (function(){
@@ -66,7 +57,7 @@
                 }
             }
             // Connect to socket.io
-            var socket = io.connect('http://localhost');
+            var socket = io.connect('https://borak.herokuapp.com');
             // Check for connection
             if(socket !== undefined){
                 console.log('Connected to socket...');
@@ -78,13 +69,26 @@
                             // Build out message div
                             var message = document.createElement('div');
                             message.setAttribute('class', 'chat-message');
-                            console.log(data[x]);
                             message.innerHTML = "<img src='" + data[x].user.image + "' alt='" + data[x].user.firstName + "' class='img-fluid rounded-circle' style='max-width: 4%''> <b>" + data[x].user.firstName +"</b>: " + data[x].message;
                             messages.appendChild(message);
                             messages.insertBefore(message, messages.firstChild);
+
+
                         }
                     }
                 });
+
+                socket.on('notification', function(data){
+                  if (window.Notification && Notification.permission === "granted") {
+                    navigator.serviceWorker.ready.then(function(registration) {
+                      registration.showNotification(data.user.firstName, {
+                        body: data.message,
+                        icon: data.user.image
+                      });
+                    });
+                  }
+                });
+
                 // Get Status From Server
                 socket.on('status', function(data){
                     // get message status
