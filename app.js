@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const path = require('path');
 
 const PORT = process.env.PORT || 5000;
 
@@ -44,6 +45,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+
+// public folder
+app.use(express.static(path.join(__dirname, 'public')))
 
 // passport middleware
 app.use(passport.initialize());
