@@ -19,6 +19,31 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) {
+        // registration worked
+        console.log('Registration succeeded. Scope is ' + reg.scope);
+      }).catch(function(error) {
+        // registration failed
+        console.log('Registration failed with ' + error);
+      });
+    }
+
+
+  Notification.requestPermission(function(result) {
+    if (result === 'granted') {
+      navigator.serviceWorker.ready.then(function(registration) {
+        registration.showNotification('Vibration Sample', {
+          body: 'Buzz! Buzz!',
+          icon: 'https://pbs.twimg.com/profile_images/839721704163155970/LI_TRk1z_400x400.jpg',
+          vibrate: [200, 100, 200, 100, 200, 100, 200],
+          tag: 'vibration-sample'
+        });
+      });
+    }
+  });
+
       (function(){
         var element = function(id){
                 return document.getElementById(id);
@@ -41,7 +66,7 @@
                 }
             }
             // Connect to socket.io
-            var socket = io.connect('https://borak.herokuapp.com');
+            var socket = io.connect('http://localhost');
             // Check for connection
             if(socket !== undefined){
                 console.log('Connected to socket...');
