@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
@@ -14,6 +15,7 @@ require('./config/passport')(passport);
 
 // authentiation routes
 const auth = require('./routes/auth');
+const index = require('./routes/index');
 
 // keys
 const keys = require('./config/keys');
@@ -27,9 +29,11 @@ mongoose.connect(keys.mongoURI, {
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
+// handlebars middleware
+app.engine('handlebars', exphbs({
+  defaultLayout: 'main'
+}));
+app.set('view engine', 'handlebars')
 
 // cookieparser
 app.use(cookieParser());
@@ -53,6 +57,7 @@ app.use((req, res, next) => {
 
 // authentication routes
 app.use('/auth', auth);
+app.use('/', index);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
