@@ -125,7 +125,7 @@ io.sockets.on('connection', (socket) => {
             // Remove all chats from collection
             Message.remove({}, function(){
                 // Emit cleared
-                socket.emit('cleared');
+                io.emit('cleared');
             });
         });
 });
