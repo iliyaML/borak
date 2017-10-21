@@ -30,11 +30,13 @@
       });
     }
 
+    try {
     if(window.Notification){
       Notification.requestPermission(function(result) {
         console.log(result);
       });
     }
+  } catch(err) { alert(err.code); }
 
       (function(){
         var element = function(id){
@@ -48,7 +50,7 @@
             var username = element('username');
             var clearBtn = element('clear');
             // Set default status
-            var statusDefault = status.textContent;
+            //var statusDefault = status.textContent;
             var setStatus = function(s){
                 // Set status
                 status.textContent = s;
@@ -59,10 +61,14 @@
                 }
             }
             // Connect to socket.io
-            var socket = io.connect('http://localhost');
+            var socket = io.connect('https://borak.herokuapp.com');
             // Check for connection
             if(socket !== undefined){
                 console.log('Connected to socket...');
+
+                socket.on('connect', function(){
+                  socket.emit('channel', 'lounge');
+                });
 
                 // Handle Output
                 socket.on('output', function(data){
@@ -104,6 +110,7 @@
                     }
                 });
 
+                {{#if user}}
                 // Handle Input
                 textarea.addEventListener('keydown', function(event){
                     if(event.which === 13 && event.shiftKey == false){
@@ -121,6 +128,9 @@
 
                 channel.addEventListener('keydown', function(event){
                     if(event.which === 13 && event.shiftKey == false){
+                      if(channel.value == ""){
+                        channel.value = "lounge";
+                      }
                         // Emit to server input
                         socket.emit('channel', channel.value);
                         messages.textContent = '';
@@ -130,16 +140,20 @@
 
                 channel.addEventListener("blur", function(){
                   // Emit to server input
+                  if(channel.value == ""){
+                    channel.value = "lounge";
+                  }
                   socket.emit('channel', channel.value);
                   messages.textContent = '';
                   textarea.value = '';
                 });
+                {{/if}}
 
 
                 // Handle Chat Clear
-                clearBtn.addEventListener('click', function(){
-                    socket.emit('clear');
-                });
+                // clearBtn.addEventListener('click', function(){
+                //     socket.emit('clear');
+                // });
                 // Clear Message
                 socket.on('cleared', function(){
                     messages.textContent = '';

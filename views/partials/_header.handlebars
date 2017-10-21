@@ -12,11 +12,11 @@
               <a class="nav-link" href="/auth/logout"><!-- <img src="{{ user.image }}" alt="{{ user.firstName }}" class="img-fluid rounded-circle" style="max-width: 4%">--> {{ user.firstName }}</a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href="/auth/logout">Log Out</a>
+              <a class="nav-link" href="/auth/logout"><i class="fa fa-sign-out"></i> Log Out</a>
             </li>
             {{else}}
             <li class="nav-item active">
-              <a class="nav-link" href="/auth/google">Log In</a>
+              <a class="nav-link" href="/auth/google"><i class="fa fa-sign-in"></i> Log In</a>
             </li>
             {{/if}}
           </ul>

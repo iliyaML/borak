@@ -75,6 +75,8 @@ io.sockets.on('connection', (socket) => {
 
   socket.on('channel', function(data){
 		// join new room, received as function parameter
+    data = (data == "") ? "lounge" : data;
+    
 		socket.join(data);
     socket.room = data;
     Message.find({ channel: data })
