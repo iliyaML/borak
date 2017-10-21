@@ -30,10 +30,11 @@
       });
     }
 
-
-  Notification.requestPermission(function(result) {
-    console.log(result);
-  });
+    if(window.Notification){
+      Notification.requestPermission(function(result) {
+        console.log(result);
+      });
+    }
 
       (function(){
         var element = function(id){
@@ -58,7 +59,7 @@
                 }
             }
             // Connect to socket.io
-            var socket = io.connect('https://borak.herokuapp.com');
+            var socket = io.connect('http://localhost');
             // Check for connection
             if(socket !== undefined){
                 console.log('Connected to socket...');
@@ -125,7 +126,16 @@
                         messages.textContent = '';
                         textarea.value = '';
                     }
-                })
+                });
+
+                channel.addEventListener("blur", function(){
+                  // Emit to server input
+                  socket.emit('channel', channel.value);
+                  messages.textContent = '';
+                  textarea.value = '';
+                });
+
+
                 // Handle Chat Clear
                 clearBtn.addEventListener('click', function(){
                     socket.emit('clear');
