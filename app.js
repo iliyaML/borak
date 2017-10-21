@@ -7,16 +7,24 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 80;
+
+const io = require('socket.io').listen(app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+}));
 
 // load user model
 require('./models/User');
+require('./models/Message');
+
+const Message = mongoose.model('messages');
+const User = mongoose.model('users');
 
 require('./config/passport')(passport);
 
 // authentiation routes
 const auth = require('./routes/auth');
-const index = require('./routes/index');
+//const index = require('./routes/index');
 
 // keys
 const keys = require('./config/keys');
@@ -61,8 +69,50 @@ app.use((req, res, next) => {
 
 // authentication routes
 app.use('/auth', auth);
-app.use('/', index);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+io.sockets.on('connection', (socket) => {
+  console.log('Socket connected');
+
+  Message.find()
+  .populate('user')
+  .exec((err, messages) => {
+    if(err){
+      throw err;
+    }
+    socket.emit('output', messages);
+  });
+
+  socket.on('input', function(data){
+            let name = data.name;
+            let message = data.message;
+
+            // Check for name and message
+            if(name == '' || message == ''){
+                // Send error status
+                console.log('Empty inputs');
+                //sendStatus('Please enter a name and message');
+            } else {
+                // Insert message
+                console.log(name);
+                console.log(message);
+
+                  const newMessage = {
+                    message: message,
+                    user: name
+                  }
+                  new Message(newMessage)
+                  .save()
+                  .then(message => {
+                    Message.findById({ _id: message._id })
+                    .populate('user')
+                    .then(message => {
+                      io.emit('output', [message])
+                    });
+                  });
+          }
+        });
+});
+
+app.get('/', (req, res) => {
+  res.render('index/index');
 });

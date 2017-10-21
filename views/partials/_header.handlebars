@@ -9,7 +9,7 @@
           <ul class="navbar-nav mr-auto">
             {{#if user}}
             <li class="nav-item active">
-              <a class="nav-link" href="/auth/logout">{{ user.firstName }}</a>
+              <a class="nav-link" href="/auth/logout"><img src="{{ user.image }}" alt="{{ user.firstName }}" class="img-fluid rounded-circle" style="max-width: 4%"> {{ user.firstName }}</a>
             </li>
             <li class="nav-item active">
               <a class="nav-link" href="/auth/logout">Log Out</a>
