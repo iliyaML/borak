@@ -73,18 +73,24 @@ app.use('/auth', auth);
 io.sockets.on('connection', (socket) => {
   console.log('Socket connected');
 
-  Message.find()
-  .populate('user')
-  .exec((err, messages) => {
-    if(err){
-      throw err;
-    }
-    socket.emit('output', messages);
-  });
+  socket.on('channel', function(data){
+		// join new room, received as function parameter
+		socket.join(data);
+    socket.room = data;
+    Message.find({ channel: data })
+    .populate('user')
+    .exec((err, messages) => {
+      if(err){
+        throw err;
+      }
+      socket.emit('output', messages);
+    });
+  })
 
   socket.on('input', function(data){
             let name = data.name;
             let message = data.message;
+            let channel = data.channel;
 
             // Check for name and message
             if(name == '' || message == ''){
@@ -98,6 +104,7 @@ io.sockets.on('connection', (socket) => {
 
                   const newMessage = {
                     message: message,
+                    channel: channel,
                     user: name
                   }
                   new Message(newMessage)
@@ -106,13 +113,24 @@ io.sockets.on('connection', (socket) => {
                     Message.findById({ _id: message._id })
                     .populate('user')
                     .then(message => {
-                      io.emit('output', [message]);
-                      socket.broadcast.emit('notification', message);
+                      io.in(socket.room).emit('output', [message]);
+                      socket.broadcast.to(socket.room).emit('notification', message);
                     });
                   });
           }
         });
+
+        // Handle clear
+        socket.on('clear', function(data){
+            // Remove all chats from collection
+            Message.remove({}, function(){
+                // Emit cleared
+                socket.emit('cleared');
+            });
+        });
 });
+
+
 
 app.get('/', (req, res) => {
   res.render('index/index');

@@ -2,13 +2,15 @@
   <div class="row">
         <div class="col-md-6 offset-md-3 col-sm-12">
             <!-- <h1 class="text-center">
-                Borak
+                Borak-->
+                <h1 class="text-center">
                 <button id="clear" class="btn btn-danger">Clear</button>
-            </h1> -->
+            </h1>
             <div id="status"></div>
             <div id="chat">
               {{#if user}}
-                <input type="hidden" id="username" class="form-control" placeholder="Enter name..." value="{{ user.id }}">
+                <input type="hidden" id="username" class="form-control" value="{{ user.id }}">
+                <input type="text" id="channel" class="form-control" placeholder="Enter channel...">
                 {{/if}}
                 <br>
                 <div class="card">
