@@ -6,10 +6,10 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav ml-auto">
             {{#if user}}
             <li class="nav-item active">
-              <a class="nav-link" href="/auth/logout"><img src="{{ user.image }}" alt="{{ user.firstName }}" class="img-fluid rounded-circle" style="max-width: 4%"> {{ user.firstName }}</a>
+              <a class="nav-link" href="/auth/logout"><!-- <img src="{{ user.image }}" alt="{{ user.firstName }}" class="img-fluid rounded-circle" style="max-width: 4%">--> {{ user.firstName }}</a>
             </li>
             <li class="nav-item active">
               <a class="nav-link" href="/auth/logout">Log Out</a>

@@ -57,7 +57,7 @@
                 }
             }
             // Connect to socket.io
-            var socket = io.connect('https://borak.herokuapp.com');
+            var socket = io.connect('http://localhost');
             // Check for connection
             if(socket !== undefined){
                 console.log('Connected to socket...');
@@ -104,9 +104,10 @@
                     if(event.which === 13 && event.shiftKey == false){
                         // Emit to server input
                         socket.emit('input', {
-                            name:username.value,
-                            message:textarea.value
+                            name: username.value,
+                            message: textarea.value
                         });
+                        textarea.value = '';
                         event.preventDefault();
                     }
                 })
