@@ -76,7 +76,7 @@ io.sockets.on('connection', (socket) => {
   socket.on('channel', function(data){
 		// join new room, received as function parameter
     data = (data == "") ? "lounge" : data;
-    
+
 		socket.join(data);
     socket.room = data;
     Message.find({ channel: data })
@@ -115,8 +115,9 @@ io.sockets.on('connection', (socket) => {
                     Message.findById({ _id: message._id })
                     .populate('user')
                     .then(message => {
-                      io.in(socket.room).emit('output', [message]);
-                      socket.broadcast.to(socket.room).emit('notification', message);
+                      io.in(channel).emit('output', [message]);
+                      socket.broadcast.to(channel).emit('notification', message);
+                      console.log(channel);
                     });
                   });
           }
