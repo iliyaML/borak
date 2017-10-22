@@ -63,7 +63,7 @@
                 }
             }
             // Connect to socket.io
-            var socket = io.connect('https://borak.herokuapp.com');
+            var socket = io.connect('http://localhost');
             // Check for connection
             if(socket !== undefined){
                 console.log('Connected to socket...');
@@ -98,7 +98,8 @@
                       registration.showNotification(data.user.firstName, {
                         body: data.message,
                         icon: data.user.image
-                      });
+                      })
+                      .then();
                     });
                   }
                 });
