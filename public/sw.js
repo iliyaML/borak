@@ -9,10 +9,14 @@ self.addEventListener('notificationclick', function(event) {
   }).then(function(clientList) {
     for (var i = 0; i < clientList.length; i++) {
       var client = clientList[i];
-      if (client.url == '/' && 'focus' in client)
-        return client.focus();
-    }
-    if (clients.openWindow)
+      if (client.url == '/' && 'focus' in client){
+        console.log('was in here');
+          return client.focus();
+        }
+      }
+    if (clients.openWindow){
+      console.log('was in there');
       return clients.openWindow('/');
+    }
   }));
 });
