@@ -12,6 +12,7 @@
   <body>
     {{> _header }}
     {{{ body }}}
+    <br>
     {{> _footer }}
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://getbootstrap.com/assets/js/vendor/popper.min.js"></script>
@@ -30,13 +31,14 @@
       });
     }
 
-    try {
     if(window.Notification){
-      Notification.requestPermission(function(result) {
-        console.log(result);
+      Notification.requestPermission(function(status) {
+        if (Notification.permission !== status) {
+          Notification.permission = status;
+          console.log(status);
+        }
       });
     }
-  } catch(err) { alert(err.code); }
 
       (function(){
         var element = function(id){
@@ -68,6 +70,7 @@
 
                 socket.on('connect', function(){
                   socket.emit('channel', 'lounge');
+                  messages.textContent = '';
                 });
 
                 // Handle Output
